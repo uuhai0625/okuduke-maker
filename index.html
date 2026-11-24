@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<script>
+  (function() {
+    var GA_ID = 'G-96SGQMCEH7';
+    var isLocalDev = ['localhost', '127.0.0.1', ''].includes(location.hostname);
+    if (isLocalDev) return;
+    try { if (/[?&]no_ga=0/.test(location.search)) localStorage.removeItem('no_ga'); if (/[?&]no_ga=1/.test(location.search)) localStorage.setItem('no_ga', '1'); if (localStorage.getItem('no_ga') === '1') return; } catch (e) {}
+    var gaQ = new URLSearchParams(location.search); if (gaQ.get('obs') === '1' || gaQ.get('no_ga') === '1') return;
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+    document.head.appendChild(s);
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', GA_ID);
+    document.addEventListener('click', function(e) {
+      var a = e.target && e.target.closest ? e.target.closest('a[href*="booth.pm"]:not([href*="/search"])') : null;
+      if (!a) return;
+      gtag('event', 'booth_click', { link_url: a.href, link_id: a.id || '', link_text: (a.textContent || '').trim().slice(0, 40) });
+    });
+  })();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="同人誌の奥付を無料で作成(登録不要)。タイトル・発行日(初版・再版・イベント名)・サークル名・著者・連絡先・印刷所・注意書きを入れるだけで、A5・B5・A6の塗り足しつき(350/600dpi)奥付ページの画像(dpi情報つきPNG)と、コピペ用のテキストを作ります。">
+<link rel="canonical" href="https://uuhai0625.github.io/okuduke-maker/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:title" content="奥付メーカー|同人誌の奥付を無料で作成・テンプレート(A5・B5・A6)・画像とコピペ用テキスト">
+<meta property="og:description" content="同人誌の奥付を無料で作成(登録不要)。タイトル・発行日(初版・再版・イベント名)・サークル名・著者・連絡先・印刷所・注意書きを入れるだけで、A5・B5・A6の塗り足しつき(350/600dpi)奥付ページの画像(dpi情報つきPNG)と、コピペ用のテキストを作ります。">
+<meta property="og:url" content="https://uuhai0625.github.io/okuduke-maker/">
+<meta property="og:image" content="https://uuhai0625.github.io/okuduke-maker/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<title>奥付メーカー|同人誌の奥付を無料で作成・テンプレート(A5・B5・A6)・画像とコピペ用テキスト</title>
+<style>
+  :root {
+    --bg: #f4f2ee;
+    --panel: #ffffff;
+    --border: #dfdad0;
+    --field-border: #6d685c;
+    --text: #26231d;
+    --muted: #5c574b;
+    --accent: #6b4f2a;
+    --accent-dark: #4a3518;
+    --ng: #b3261e;
+    --locked: #cfc6b4;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+  header { background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: #fff; padding: 24px 20px 18px; text-align: center; }
+  header h1 { margin: 0 0 6px; font-size: 1.35rem; }
+  header p { margin: 0; font-size: .9rem; }
+  main { max-width: 1040px; margin: 0 auto; padding: 22px 16px 50px; }
+  main > * { min-width: 0; }
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+  .layout > div { min-width: 0; }
+  .layout > .col-pv { position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow-y: auto; }
+  section.card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; margin-bottom: 18px; }
+  section.card h2 { margin: 0 0 6px; font-size: 1.05rem; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .desc { color: var(--muted); font-size: .84rem; margin: 0 0 12px; }
+  .fine { color: var(--muted); font-size: .8rem; margin: 8px 0 0; }
+  .badge { display: inline-block; font-size: .7rem; padding: 2px 8px; border-radius: 999px; background: #fff1cc; color: #7a5600; font-weight: bold; }
+  .hidden { display: none !important; }
+  label.field { display: block; margin-bottom: 12px; }
+  .lbl { font-size: .85rem; font-weight: bold; display: block; }
+  .hint { font-size: .78rem; color: var(--muted); font-weight: normal; display: block; margin-top: 2px; }
+  input[type=text], input[type=date], select, textarea { width: 100%; margin-top: 5px; padding: 8px 10px; min-height: 44px; border: 1px solid var(--field-border); border-radius: 8px; font-size: 1rem; font-family: inherit; background: #fff; color: var(--text); }
+  textarea { resize: vertical; line-height: 1.6; min-height: 90px; }
+  #outText { min-height: 170px; font-size: .9rem; background: #fbfaf7; }
+  .check { display: flex; align-items: center; gap: 8px; min-height: 44px; font-size: .9rem; cursor: pointer; }
+  .check input { width: 22px; height: 22px; }
+  .row2 { display: flex; gap: 12px; }
+  .row2 > * { flex: 1; min-width: 0; }
+  .btn-row { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .btn { min-height: 44px; padding: 9px 16px; border-radius: 8px; font-size: .88rem; cursor: pointer; border: 1px solid var(--field-border); background: #fff; color: var(--text); font-family: inherit; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: bold; }
+  .btn.small { min-width: 44px; padding: 6px 8px; }
+  .btn.chip { min-height: 44px; padding: 4px 12px; font-size: .8rem; border-radius: 999px; }
+  .btn.chip[aria-pressed=true] { background: #f1ead9; border-color: var(--accent); }
+  #dates .rowi { border-top: 1px dashed var(--border); padding-top: 8px; }
+  .btn.link { border: 0; background: none; color: var(--muted); text-decoration: underline; padding: 6px 0; }
+  .btn:disabled { opacity: .6; cursor: default; }
+  .btn:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible { outline: 2px solid var(--accent-dark); outline-offset: 2px; }
+  .btn-row .btn { flex: 1; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .status { font-size: .82rem; color: var(--muted); margin-top: 6px; min-height: 1.2em; }
+  .status.err, .err { color: var(--ng); font-weight: bold; }
+  .rows { list-style: none; margin: 0; padding: 0; }
+  .rowi { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr) 44px; gap: 6px; align-items: center; padding: 4px 0; }
+  .rowi input { margin-top: 0; min-width: 0; }
+  .preview { border: 1px solid var(--border); border-radius: 8px; background: #e7e3da; padding: 12px; text-align: center; }
+  .preview img { max-width: 100%; max-height: 66vh; height: auto; box-shadow: 0 2px 10px rgba(0,0,0,.18);
+    background-color: #fff; background-image: linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%); background-size: 16px 16px; background-position: 0 0, 8px 8px; }
+  .info { font-size: .84rem; margin-top: 8px; }
+  .warn { font-size: .84rem; margin-top: 8px; padding: 8px 10px; border-radius: 8px; background: #fff4e0; border: 1px solid #e6b45c; color: #5c3b00; }
+  .warn:empty { display: none; }
+  .guide { font-size: .86rem; }
+  .guide ul, .guide ol { padding-left: 1.3em; margin: 6px 0; }
+  .guide li { margin: 4px 0; }
+  .locked-panel { border: 1px dashed var(--locked); border-radius: 10px; padding: 16px; text-align: center; color: var(--muted); background: #fbf9f5; }
+  .locked-panel .lead { color: var(--text); font-weight: bold; }
+  .locked-panel .feat-list { text-align: left; max-width: 600px; margin: 10px auto; font-size: .85rem; padding-left: 1.2em; }
+  .buy-btn { display: inline-block; margin-top: 8px; background: var(--accent-dark); color: #fff; font-weight: bold; padding: 11px 22px; border-radius: 999px; text-decoration: none; font-size: .9rem; }
+  footer { max-width: 1040px; margin: 0 auto; padding: 0 16px 40px; font-size: .8rem; color: var(--muted); }
+  footer a { color: var(--muted); display: inline-block; padding: 10px 0; }
+  @media (max-width: 820px) {
+    .layout { grid-template-columns: minmax(0, 1fr); }
+    .layout > .col-pv { display: contents; }
+    #result-card { order: -1; position: sticky; top: 0; z-index: 5; margin-bottom: 0; padding: 8px 10px; box-shadow: 0 4px 12px rgba(0,0,0,.12); }
+    #result-card h2, #result-card .check { display: none; }
+    #result-card .preview { padding: 6px; }
+    #result-card .preview img { max-height: 30vh; }
+    body.typing #result-card .preview img { max-height: 15vh; }
+    #save-card { order: 2; }
+    html { scroll-padding-top: 34vh; }
+  }
+  @media (max-width: 600px) {
+    .row2 { flex-direction: column; gap: 0; }
+    section.card { padding: 16px 14px; }
+  }
+</style>
+<!--ANSHIN_CSS_START--><style>:root{--anshin-w:1008px;--anshin-pad:16px}.anshin-strip,.anshin{box-sizing:border-box;width:min(var(--anshin-w),calc(100% - 2 * var(--anshin-pad)));margin-left:auto;margin-right:auto}.anshin-strip{list-style:none;margin-top:10px;margin-bottom:0;padding:0;display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;font-size:.8rem;line-height:1.5}.anshin-strip li{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border:1px solid rgba(20,120,90,.45);border-radius:999px;background:rgba(20,120,90,.07)}.anshin-strip li.anshin-more{border:0;background:none;padding:3px 2px}.anshin-strip a,.anshin a{color:inherit}.anshin{margin-top:18px;margin-bottom:18px;padding:14px 18px;border:1px solid rgba(20,120,90,.45);border-radius:10px;background:rgba(20,120,90,.05);font-size:.86rem;line-height:1.7}.anshin h2{font-size:1rem;margin:0 0 6px}.anshin p{margin:0 0 6px}.anshin ul{margin:0;padding-left:1.2em}.anshin li{margin:3px 0}.anshin details{margin-top:6px}.anshin summary{cursor:pointer;font-weight:bold}.anshin .anshin-meta{margin:8px 0 0;font-size:.8rem;opacity:.85}@media print{.anshin,.anshin-strip{display:none!important}}</style><!--ANSHIN_CSS_END-->
+<!--UPSELL_CSS_START--><style>.upsell-top{box-sizing:border-box;width:min(var(--anshin-w,880px),calc(100% - 2 * var(--anshin-pad,16px)));margin:12px auto 0;font-size:.85rem;line-height:1.6}.upsell-top a{color:inherit}.upsell-assure{list-style:none;margin:12px 0 10px;padding:0;display:flex;flex-wrap:wrap;gap:6px 8px;font-size:.8rem;line-height:1.5}.upsell-assure li{padding:3px 10px;border:1px solid rgba(20,120,90,.45);border-radius:12px;background:rgba(20,120,90,.06)}.upsell-terms{margin:8px 0 0;font-size:.78rem;line-height:1.6;opacity:.85}.upsell-toast{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);z-index:9999;box-sizing:border-box;width:min(520px,calc(100% - 24px));padding:14px 56px 14px 16px;border-radius:12px;background:#fff;color:#222;border:1px solid #c9c2d6;box-shadow:0 6px 24px rgba(0,0,0,.18);font-size:.88rem;line-height:1.6}.upsell-toast p{margin:0 0 6px;font-weight:bold}.upsell-toast ul{margin:0 0 10px;padding-left:1.2em}.upsell-toast li{margin:2px 0}.upsell-toast .upsell-note{display:block;margin-top:6px;font-size:.75rem;color:#555}.upsell-toast .upsell-go{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:8px;background:#c9283e;color:#fff;font-weight:bold;text-decoration:none}.upsell-toast.upsell-calm .upsell-go{background:#3f4a63}.upsell-toast .upsell-go:focus-visible,.upsell-toast .upsell-x:focus-visible{outline:3px solid #2560c4;outline-offset:2px}.upsell-toast .upsell-x{position:absolute;top:4px;right:4px;width:44px;height:44px;border:0;border-radius:8px;background:transparent;color:#555;font-size:1.3rem;line-height:1;cursor:pointer}.upsell-inline{white-space:nowrap;color:inherit;text-decoration:underline;text-underline-offset:2px}@media print{.upsell-top,.upsell-assure,.upsell-terms,.upsell-toast,.upsell-inline{display:none!important}}</style><!--UPSELL_CSS_END-->
+<!--JSONLD_START--><script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"奥付メーカー(無料の同人誌の奥付作成ツール)","url":"https://uuhai0625.github.io/okuduke-maker/","description":"同人誌の奥付を無料で作成(登録不要)。タイトル・発行日(初版・再版・イベント名)・サークル名・著者・連絡先・印刷所・注意書きを入れるだけで、A5・B5・A6の塗り足しつき(350/600dpi)奥付ページの画像(dpi情報つきPNG)と、コピペ用のテキストを作ります。","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","inLanguage":"ja","offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"},"author":{"@type":"Person","name":"uuhai0625","url":"https://uuhai0625.github.io/"}}</script><!--JSONLD_END-->
+</head>
+<body>
+
+<header>
+  <h1>奥付メーカー(無料の同人誌の奥付作成ツール)</h1>
+  <p>タイトル・発行日・サークル名・連絡先・印刷所を入れるだけで、同人誌の奥付ページを作ります。判型の大きさ(塗り足しつき)の画像と、コピペ用のテキストに。登録不要・ブラウザだけで使えます</p>
+</header>
+<!--ANSHIN_STRIP_START-->
+<ul class="anshin-strip" aria-label="データの扱い">
+  <li><span aria-hidden="true">✓</span> 入力内容はこの端末の中だけで処理</li>
+  <li><span aria-hidden="true">✓</span> 登録・ログイン不要</li>
+  <li><span aria-hidden="true">✓</span> 仕組みを公開中</li>
+  <li class="anshin-more"><a href="#anshin">データの扱いをくわしく</a></li>
+</ul>
+<!--ANSHIN_STRIP_END-->
+<!--UPSELL_TOP_START--><p class="upsell-top no-print" id="upsellTop">このページは無料のまま使えます。機能を増やしたい方は <a href="#pro-section">買い切り版(¥100・1回払い)<span aria-hidden="true"> ↓</span></a></p><!--UPSELL_TOP_END-->
+
+<main>
+<div class="layout">
+<div>
+
+  <section class="card" id="book-card">
+    <h2>① 本の情報</h2>
+    <label class="field">
+      <span class="lbl">タイトル</span>
+      <input type="text" id="in-title" maxlength="40" value="" placeholder="例: 星降る夜のあとで" data-save>
+    </label>
+    <div class="row2">
+      <label class="field">
+        <span class="lbl">発行(サークル名)</span>
+        <input type="text" id="in-circle" maxlength="30" value="" placeholder="例: ねこまる堂" data-save>
+      </label>
+      <label class="field">
+        <span class="lbl">著者(ペンネーム)</span>
+        <input type="text" id="in-author" maxlength="30" value="" placeholder="例: ねこまる" data-save>
+      </label>
+    </div>
+    <label class="field">
+      <span class="lbl">印刷所</span>
+      <input type="text" id="in-printer" maxlength="30" value="" placeholder="例: 〇〇印刷 株式会社" data-save>
+    </label>
+    <button class="btn link" type="button" id="resetAll">入力を全部消す</button>
+  </section>
+
+  <section class="card" id="date-card">
+    <h2>② 発行日</h2>
+    <p class="desc">イベントで初めて出す本は「初版」、刷り直したら「再版」「第2刷」などを足します。イベント名は省けます。</p>
+    <ul class="rows" id="dates"></ul>
+    <div class="btn-row"><button class="btn" type="button" id="addDate">＋ 発行日を足す</button></div>
+    <div class="status" id="dateSt" role="status"></div>
+  </section>
+
+  <section class="card" id="contact-card">
+    <h2>③ 連絡先</h2>
+    <p class="desc">Xのアカウント・pixiv・Webサイト・メールなど。印刷所によっては、奥付に連絡先が必要です。</p>
+    <ul class="rows" id="contacts"></ul>
+    <div class="btn-row"><button class="btn" type="button" id="addContact">＋ 連絡先を足す</button></div>
+    <div class="status" id="contactSt" role="status"></div>
+  </section>
+
+  <section class="card" id="note-card">
+    <h2>④ 注意書き</h2>
+    <label class="field">
+      <span class="lbl">注意書き(1行に1つ)</span>
+      <textarea id="in-notes" maxlength="400" data-save></textarea>
+    </label>
+    <span class="hint">よく使う文を足す:</span>
+    <div class="chips" id="noteChips"></div>
+  </section>
+
+  <section class="card" id="look-card">
+    <h2>⑤ 判型とデザイン</h2>
+    <div class="row2">
+      <label class="field">
+        <span class="lbl">判型(仕上がりの大きさ)</span>
+        <select id="in-size" data-save>
+          <option value="a5" selected>A5(148×210mm)</option>
+          <option value="b5">B5(182×257mm)</option>
+          <option value="a6">A6・文庫(105×148mm)</option>
+          
+        </select>
+      </label>
+      <label class="field">
+        <span class="lbl">解像度</span>
+        <select id="in-dpi" data-save>
+          <option value="350" selected>350dpi(カラー・グレー)</option>
+          <option value="600">600dpi(白黒の漫画原稿)</option>
+        </select>
+      </label>
+    </div>
+    <div class="row2">
+      <label class="field">
+        <span class="lbl">デザイン</span>
+        <select id="in-style" data-save>
+          <option value="rule" selected>罫線</option>
+          <option value="box">枠で囲む</option>
+          <option value="plain">シンプル</option>
+        </select>
+      </label>
+      <label class="field">
+        <span class="lbl">置く場所</span>
+        <select id="in-pos" data-save>
+          <option value="bottom" selected>ページの下のほう</option>
+          <option value="center">ページのまん中</option>
+        </select>
+      </label>
+    </div>
+    
+  </section>
+
+  <section class="card" id="text-card">
+    <h2>⑥ コピペ用のテキスト</h2>
+    <p class="desc">原稿のソフト(CLIP STUDIO PAINT・Word・アイビスペイントなど)に貼り付けて使うとき用です。</p>
+    <textarea id="outText" readonly aria-label="奥付のテキスト"></textarea>
+    <div class="btn-row"><button class="btn" type="button" id="copyBtn">テキストをコピー</button></div>
+    <div class="status" id="copySt" role="status"></div>
+  </section>
+
+</div>
+<div class="col-pv">
+  <section class="card" id="result-card">
+    <h2>見本</h2>
+    <div class="preview"><img id="pvImg" alt="奥付の見本"></div>
+    <label class="check"><input type="checkbox" id="in-guide" checked data-save> 見本に仕上がり線(赤)と安全な範囲(青)を出す(保存する画像には入りません)</label>
+    <p class="fine">赤=断裁される位置、青の内側=断裁がずれても切れない範囲(文字はこの中に)。見本の文字は小さいので、文字の確認は⑥のテキストでどうぞ。</p>
+  </section>
+  <section class="card" id="save-card">
+    <h2>⑦ 画像を保存</h2>
+    <div class="warn" id="warn" aria-live="polite"></div>
+    <div class="info" id="info"></div>
+    <div class="btn-row">
+      <button class="btn primary" type="button" id="saveBtn">画像を保存(PNG)</button>
+    </div>
+    <div class="status" id="st" role="status"></div>
+    <ul class="fine" style="padding-left:1.2em;">
+      <li>画像は塗り足し(上下左右3mm)つきの大きさで、解像度の情報(dpi)が入ったPNGです。原稿のソフトで、奥付のページに読み込んで使います。</li>
+      <li>白黒(モノクロ2階調)で入稿するときは、600dpiで保存し、原稿のソフトで色の設定を印刷所の指定に合わせてください(2階調にすると文字の縁がギザつくことがあります)。</li>
+    </ul>
+  </section>
+</div>
+</div>
+
+  <section class="card" id="pro-section">
+    <h2>縦書き(小説本)と、原稿に重ねる透過PNG <span class="badge">買い切り版 ¥100(税込)</span></h2>
+    <div class="locked-panel">
+      <p class="lead">小説本の縦書きの奥付や、漫画原稿の好きな場所に重ねたいときに。</p>
+      <p>このページの機能は無料でそのまま使えます(横書き・A5/B5/A6・350/600dpi・連絡先は3つまで)。買い切り版(ダウンロード購入)では、次の機能が増えます:</p>
+      <ul class="feat-list">
+        <li><strong>縦書きの奥付</strong>(小説本向け。日付は漢数字にします)</li>
+        <li><strong>奥付の部分だけを背景透明のPNGで保存</strong>(原稿の好きな場所や、表3に重ねられます)</li>
+        <li><strong>B6・新書の判型</strong></li>
+        <li>連絡先6つ・発行日5つまで(無料版は連絡先3つ・発行日2つまで)</li>
+        <li><strong>パソコンで使うHTMLファイルです</strong>(スマホでの動作は保証していません。スマホの方は、このページの無料版をお使いください)。ダブルクリックで開くだけ、ネットにつながっていなくても使えます</li>
+      </ul>
+      <p class="fine">※買い切り版はパソコン(Windows・Mac)用です。iPad・スマホでは使えません。</p>
+<!--UPSELL_ASSURE_START--><ul class="upsell-assure" aria-label="買い切り版について"><li>¥100(税込)の1回払い・月額なし</li><li>パソコン向けのHTMLファイル(スマホでは開けない機種あり)</li><li>ネットにつながっていなくても動く</li><li>BOOTHで購入(クレジットカード・楽天ペイは手数料なし、コンビニ・銀行払いは別途手数料)</li></ul><!--UPSELL_ASSURE_END-->
+      <a class="buy-btn" href="https://uuhai0625.booth.pm/items/9216498" id="buyLink" target="_blank" rel="noopener">買い切り版を見る(BOOTH・新しいタブ)</a><!--UPSELL_TERMS_START--><p class="upsell-terms">販売者の情報・返品などの販売条件は、BOOTHの商品ページでご確認ください。BOOTHでの購入にはpixivのアカウントが必要です。</p><!--UPSELL_TERMS_END-->
+    </div>
+  </section>
+
+  <section class="card guide" id="guide">
+    <h2>奥付の作り方</h2>
+    <ol>
+      <li>①〜④に、タイトル・サークル名・著者・印刷所・発行日・連絡先・注意書きを入れます。</li>
+      <li>⑤で本の判型を選びます。</li>
+      <li>「画像を保存」で、塗り足しつきの奥付ページの画像を保存し、原稿のソフトで最後のページに入れます。文字だけ欲しいときは⑥のテキストをコピーします。</li>
+    </ol>
+    <h2 style="margin-top:16px;">よくある疑問</h2>
+    <ul>
+      <li><strong>奥付には何を書けばいい?</strong> 一般的には、タイトル・発行日・発行者(サークル名)・著者・連絡先・印刷所です。印刷所やイベントによって「奥付に発行者名と連絡先が必要」などの決まりがあるので、入稿前に各印刷所・イベントの案内を確かめてください。</li>
+      <li><strong>奥付はどのページに入れる?</strong> ふつうは本文の最後のページです。表3(裏表紙の内側)に入れる人もいます。表紙のデータ(表2・表3)は背幅つきの見開きで作ることが多いので、その場合は奥付の部分だけを重ねて使います。</li>
+      <li><strong>連絡先は本名や住所が必要?</strong> 同人誌では、Xのアカウント・Webサイト・メールアドレスなど、連絡がとれるものを書くことが多いです。必要な情報は印刷所・イベントの決まりに従ってください。</li>
+      <li><strong>「AI学習禁止」と書けば守られる?</strong> 意思表示にはなりますが、それだけで学習を止められるわけではありません。</li>
+      <li><strong>入れた内容は?</strong> このブラウザの中だけで処理し、どこにも送信しません。次に開いたときのために、このブラウザに入力内容を残します。共用のパソコンでは、使い終わったら「入力を全部消す」を押してください。</li>
+    </ul>
+  </section>
+
+</main>
+
+<!--ANSHIN_START-->
+<section class="anshin" id="anshin" aria-labelledby="anshin-title">
+  <h2 id="anshin-title">データの扱いについて</h2>
+  <p>このページには、入力した内容を受け取る仕組みがありません。入力した文字や数字は、あなたのスマホやパソコンの中だけで処理されます。</p>
+  <ul>
+    <li>会員登録・ログイン・メールアドレスの入力はありません。</li>
+    <li>自分で確かめたい方へ: ページを開いたあと機内モードにしても、そのまま使えます。</li>
+  </ul>
+  <details>
+    <summary>もっとくわしく(保存・アクセス解析・公開について)</summary>
+    <ul>
+      <li>保存されるデータは、この端末のこのブラウザの中にだけ残ります(localStorage・sessionStorage)。共用のパソコンでは使い終わったら消してください。</li>
+      <li>アクセス解析(Google Analytics)のため、見たページのURL・参照元・端末やブラウザの種類・おおよその地域(IPアドレスから推定)・Cookieの識別子・BOOTHへのリンクのクリック・どのボタンを押したか(回数や選んだ設定を含む)がGoogleに送られます。目的は利用状況の把握です。入力した文字や画像は送りません。(<a href="https://policies.google.com/technologies/partner-sites?hl=ja" target="_blank" rel="noopener">Googleによるデータの使用</a>/<a href="https://tools.google.com/dlpage/gaoptout?hl=ja" target="_blank" rel="noopener">計測を止めるアドオン</a>。止めてもツールはそのまま使えます)</li>
+      <li>このツールの結果や作成物は目安です。入稿・契約・販売などの前には、印刷所や公式の情報でご確認ください。</li>
+      <li>処理の中身はすべて公開しています(詳しい方向け: <a href="https://github.com/uuhai0625/okuduke-maker" target="_blank" rel="noopener">GitHub</a>)。</li>
+    </ul>
+  </details>
+  <p class="anshin-meta">作っている人: ウーハイ(個人開発)/不具合・ご質問は<a href="https://x.com/uuhai0625" target="_blank" rel="noopener">X(@uuhai0625)</a>へ/<a href="https://uuhai0625.github.io/" target="_blank" rel="noopener">ほかのツール</a>/この説明の更新日: 2026-10-13</p>
+</section>
+<!--ANSHIN_END-->
+
+<footer>
+  <p id="privacyNote">本ツールは完全にブラウザ内で動作し、入力した内容はどこにも送信されません。</p>
+  <p><a href="https://uuhai0625.booth.pm/" target="_blank" rel="noopener">他のツールも見る(BOOTHショップ)</a></p>
+  <p>不具合・ご要望は X <a href="https://x.com/uuhai0625" target="_blank" rel="noopener">@uuhai0625</a> まで。</p>
+  <p class="related-tools no-print">関連する無料ツール: <a href="https://uuhai0625.github.io/hyoushi-template/" target="_blank" rel="noopener">表紙テンプレートメーカー</a> ・ <a href="https://uuhai0625.github.io/daiwari-maker/" target="_blank" rel="noopener">台割作成ツール</a> ・ <a href="https://uuhai0625.github.io/nyuko-checker/" target="_blank" rel="noopener">入稿まえチェッカー</a> ・ <a href="https://uuhai0625.github.io/#free-tools">ツール一覧</a></p>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  var EDITION = "free"; // "full" で買い切り完全版
+
+  function track(name, params) {
+    if (!window.dataLayer) return;
+    (function () { window.dataLayer.push(arguments); })("event", name, params || {});
+  }
+  var $ = function (id) { return document.getElementById(id); };
+  function el(tag, attrs, text) {
+    var e = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) { if (k === "class") e.className = attrs[k]; else e.setAttribute(k, attrs[k]); });
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function setSt(id, msg, err) { var e = $(id); e.textContent = msg; e.classList.toggle("err", !!err); }
+
+  var LAST_KEY = "okuduke_last_v1";
+  var MAX_CONTACTS = 3, MAX_DATES = 2, PV_MAX = 1100;
+  var SIZES = { a5: [148, 210], b5: [182, 257], a6: [105, 148], b6: [128, 182], shinsho: [103, 182] };
+  var SIZE_NAME = { a5: "A5", b5: "B5", a6: "A6", b6: "B6", shinsho: "新書" };
+  var BLEED = 3, SAFE = 12;   // mm
+  var FONT = '"Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "MS PMincho", serif';
+  var GOTHIC = '"Hiragino Kaku Gothic ProN", "Yu Gothic", "YuGothic", "Meiryo", sans-serif';
+  var NOTE_CHIPS = ["本書の無断転載・複製・アップロードを禁じます。", "本作品はフィクションです。実在の人物・団体等とは関係ありません。", "この本は個人が制作した二次創作物です。原作者・出版社・公式とは関係ありません。", "AI学習への利用を禁じます。", "乱丁・落丁がありましたらご連絡ください。"];
+
+  // 買い切り版で差し替えるフック(無料版では何もしない)
+  var extendSettings = function (s) { return s; };
+
+  function oneLine(v, n) { return Array.from(String(v == null ? "" : v).replace(/\s+/g, " ").trim()).slice(0, n).join(""); }
+  function realDate(v) {
+    if (typeof v !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(v)) return false;
+    var p = v.split("-").map(Number), d = new Date(p[0], p[1] - 1, p[2]);
+    return d.getFullYear() === p[0] && d.getMonth() === p[1] - 1 && d.getDate() === p[2];
+  }
+  function today() { var d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+  var dates = [{ d: today(), k: "初版", ev: "" }];
+  var contacts = [{ k: "X", v: "" }, { k: "Web", v: "" }];
+  function cleanDates(raw) {
+    if (!Array.isArray(raw) || !raw.length) return [{ d: today(), k: "初版", ev: "" }];
+    return raw.slice(0, MAX_DATES).map(function (x) { x = x && typeof x === "object" ? x : {}; return { d: realDate(x.d) ? x.d : "", k: oneLine(x.k, 8), ev: oneLine(x.ev, 30) }; });
+  }
+  function cleanContacts(raw) {
+    if (!Array.isArray(raw)) return [{ k: "X", v: "" }];
+    return raw.slice(0, MAX_CONTACTS).map(function (x) { x = x && typeof x === "object" ? x : {}; return { k: oneLine(x.k, 10), v: oneLine(x.v, 60) }; });
+  }
+
+  // ===== 入力欄 =====
+  function datesUi(focusLast) {
+    var ul = $("dates"); ul.innerHTML = "";
+    dates.forEach(function (it, i) {
+      var li = el("li", { class: "rowi" }); li.style.gridTemplateColumns = "minmax(0,3fr) minmax(0,2fr) 44px";
+      var d = el("input", { type: "date", "aria-label": (i + 1) + "つ目の発行日" }); d.value = it.d;
+      d.addEventListener("input", function () { it.d = /^\d{4}-\d{2}-\d{2}$/.test(d.value) ? d.value : ""; changed(); });
+      var k = el("input", { type: "text", maxlength: "8", "aria-label": (i + 1) + "つ目の版(初版・再版など)", placeholder: "初版" }); k.value = it.k;
+      k.addEventListener("input", function () { it.k = oneLine(k.value, 8); changed(); });
+      var del = el("button", { class: "btn small", type: "button", "aria-label": (i + 1) + "つ目の発行日を消す" }, "×");
+      del.disabled = dates.length < 2;
+      del.addEventListener("click", function () { dates.splice(i, 1); datesUi(); changed(); $("addDate").focus(); });
+      var ev = el("input", { type: "text", maxlength: "30", "aria-label": (i + 1) + "つ目のイベント名", placeholder: "イベント名(省けます)" }); ev.value = it.ev; ev.style.gridColumn = "1 / -1";
+      ev.addEventListener("input", function () { it.ev = oneLine(ev.value, 30); changed(); });
+      li.appendChild(d); li.appendChild(k); li.appendChild(del); li.appendChild(ev);
+      ul.appendChild(li);
+    });
+    if (focusLast) { var ins = ul.querySelectorAll("input[type=date]"); if (ins.length) ins[ins.length - 1].focus(); }
+  }
+  function contactsUi(focusLast) {
+    var ul = $("contacts"); ul.innerHTML = "";
+    contacts.forEach(function (it, i) {
+      var li = el("li", { class: "rowi" });
+      var v = null;
+      var k = el("input", { type: "text", maxlength: "10", "aria-label": (i + 1) + "つ目の連絡先の種類", placeholder: "種類(X など)" }); k.value = it.k;
+      k.addEventListener("input", function () { it.k = oneLine(k.value, 10); v.setAttribute("aria-label", (i + 1) + "つ目の連絡先(" + (it.k || "種類なし") + ")"); changed(); });
+      v = el("input", { type: "text", maxlength: "60", "aria-label": (i + 1) + "つ目の連絡先(" + (it.k || "種類なし") + ")", placeholder: "@アカウント・URL・メール" }); v.value = it.v;
+      v.addEventListener("input", function () { it.v = oneLine(v.value, 60); changed(); });
+      var del = el("button", { class: "btn small", type: "button", "aria-label": (i + 1) + "つ目の連絡先を消す" }, "×");
+      del.addEventListener("click", function () { contacts.splice(i, 1); contactsUi(); changed(); setSt("contactSt", "連絡先を1つ消しました。"); $("addContact").focus(); });
+      li.appendChild(k); li.appendChild(v); li.appendChild(del);
+      ul.appendChild(li);
+    });
+    if (focusLast) { var ins = ul.querySelectorAll("input"); if (ins.length) ins[ins.length - 2].focus(); }
+  }
+  $("addDate").addEventListener("click", function () {
+    if (dates.length >= MAX_DATES) { setSt("dateSt", EDITION === "full" ? "発行日は" + MAX_DATES + "つまでです。" : "無料版は発行日2つまでです。買い切り版なら5つまで入れられます。", true); return; }
+    setSt("dateSt", "");
+    dates.push({ d: today(), k: dates.length === 1 ? "再版" : "第" + (dates.length + 1) + "刷", ev: "" }); datesUi(true); changed();
+  });
+  $("addContact").addEventListener("click", function () {
+    if (contacts.length >= MAX_CONTACTS) { setSt("contactSt", EDITION === "full" ? "連絡先は" + MAX_CONTACTS + "つまでです。" : "無料版は連絡先3つまでです。買い切り版なら6つまで入れられます。", true); return; }
+    setSt("contactSt", "");
+    contacts.push({ k: "", v: "" }); contactsUi(true); changed();
+  });
+  function syncChips() {
+    var lines = $("in-notes").value.split("\n");
+    [].forEach.call($("noteChips").children, function (b, i) { b.setAttribute("aria-pressed", lines.indexOf(NOTE_CHIPS[i]) >= 0 ? "true" : "false"); });
+  }
+  NOTE_CHIPS.forEach(function (n) {
+    var b = el("button", { class: "btn chip", type: "button", title: n }, n.length > 16 ? n.slice(0, 15) + "…" : n);
+    b.setAttribute("aria-label", n);
+    b.addEventListener("click", function () {
+      var t = $("in-notes"), lines = t.value.replace(/\s+$/, "").split("\n").filter(function (l) { return l !== ""; }), at = lines.indexOf(n);
+      if (at >= 0) lines.splice(at, 1); else lines.push(n);
+      t.value = lines.join("\n"); syncChips(); changed();
+    });
+    $("noteChips").appendChild(b);
+  });
+  $("in-notes").addEventListener("input", syncChips);
+
+  // ===== 設定 =====
+  function settings() {
+    var s = {
+      title: oneLine($("in-title").value, 40), circle: oneLine($("in-circle").value, 30), author: oneLine($("in-author").value, 30), printer: oneLine($("in-printer").value, 30),
+      notes: $("in-notes").value.replace(/\r/g, "").split("\n").map(function (l) { return oneLine(l, 60); }).filter(Boolean).slice(0, 8),
+      size: SIZES[$("in-size").value] ? $("in-size").value : "a5",
+      dpi: $("in-dpi").value === "600" ? 600 : 350,
+      style: ["rule", "box", "plain"].indexOf($("in-style").value) >= 0 ? $("in-style").value : "rule",
+      pos: $("in-pos").value === "center" ? "center" : "bottom",
+      vert: false, out: "page", guide: $("in-guide").checked
+    };
+    return extendSettings(s);
+  }
+  function jDate(d, kanji) {
+    if (!d) return "";
+    var p = d.split("-").map(Number);
+    if (!kanji) return p[0] + "年" + p[1] + "月" + p[2] + "日";
+    var K = "〇一二三四五六七八九";
+    var y = String(p[0]).split("").map(function (c) { return K[+c]; }).join("");
+    function n(x) { return x < 10 ? K[x] : (x < 20 ? "十" : K[Math.floor(x / 10)] + "十") + (x % 10 ? K[x % 10] : ""); }
+    return y + "年" + n(p[1]) + "月" + n(p[2]) + "日";
+  }
+  // 奥付の行: {k: 見出し, v: 中身, kind}
+  function rowsOf(s, kanji) {
+    var r = [];
+    dates.forEach(function (x) { if (x.d || x.k) r.push(x.k ? { k: "", full: true, v: [jDate(x.d, kanji), x.k + "発行", x.ev ? "(" + x.ev + ")" : ""].filter(Boolean).join(" ") } : { k: "発行日", v: [jDate(x.d, kanji), x.ev ? "(" + x.ev + ")" : ""].filter(Boolean).join(" ") }); });
+    if (s.circle) r.push({ k: "発行", v: s.circle });
+    if (s.author) r.push({ k: "著者", v: s.author });
+    contacts.forEach(function (x) { if (x.v) r.push({ k: x.k || "連絡先", v: x.v }); });
+    if (s.printer) r.push({ k: "印刷", v: s.printer });
+    return r;
+  }
+  function textOut(s) {
+    var r = rowsOf(s, false), out = [];
+    if (s.title) out.push(s.title, "");
+    // 見出しの幅をそろえる(半角は0.5文字)
+    function wid(sx) { return Array.from(sx).reduce(function (a, c) { return a + (/[ -~]/.test(c) ? 0.5 : 1); }, 0); }
+    var mx = 0; r.forEach(function (x) { if (!x.full) mx = Math.max(mx, wid(x.k)); });
+    r.forEach(function (x) { if (x.full) { out.push(x.v); return; } var pad = Math.max(1, Math.ceil(mx - wid(x.k)) + 1); out.push(x.k + "　".repeat(pad) + x.v); });
+    if (s.notes.length) { out.push(""); s.notes.forEach(function (n) { out.push(n); }); }
+    return out.join("\n");
+  }
+
+  // ===== 描く =====
+  function mm2px(mm, dpi) { return mm / 25.4 * dpi; }
+  function setFont(ctx, px, w, f) { ctx.font = (w || "normal") + " " + Math.max(1, px) + "px " + (f || FONT); }
+  function ellipsis(ctx, text, maxW) {
+    if (ctx.measureText(text).width <= maxW) return text;
+    var a = Array.from(text);
+    while (a.length > 1 && ctx.measureText(a.join("") + "…").width > maxW) a.pop();
+    return a.join("") + "…";
+  }
+  function wrap(ctx, text, maxW) {
+    var a = Array.from(text), lines = [], cur = "";
+    while (a.length) { if (!cur || ctx.measureText(cur + a[0]).width <= maxW) cur += a.shift(); else { lines.push(cur); cur = ""; } }
+    if (cur) lines.push(cur);
+    return lines.length ? lines : [""];
+  }
+
+  // 横書きのブロックの大きさを測って、描く関数を返す
+  function hBlock(ctx, s, dpi, maxW) {
+    var u = dpi / 25.4, rows = rowsOf(s, false);
+    var tPx = 5 * u, rPx = 3.1 * u, nPx = 2.5 * u, lh = 1.75, padIn = s.style === "box" ? 4 * u : 0;
+    var innerW = maxW - padIn * 2;
+    setFont(ctx, rPx, "bold");
+    var lblW = 0; rows.forEach(function (x) { if (!x.full) lblW = Math.max(lblW, ctx.measureText(x.k).width); });
+    lblW += 3.5 * u;
+    var items = [], h = padIn;
+    if (s.title) { setFont(ctx, tPx, "bold"); wrap(ctx, s.title, innerW).forEach(function (l) { items.push({ t: "title", text: l, y: h }); h += tPx * 1.5; }); h += 1.5 * u; }
+    if (s.style === "rule" && (s.title || rows.length)) { items.push({ t: "rule", y: h }); h += 3 * u; }
+    setFont(ctx, rPx);
+    rows.forEach(function (x) {
+      var ls = wrap(ctx, x.v, innerW - (x.full ? 0 : lblW));
+      ls.forEach(function (l, j) { items.push({ t: "row", k: j ? "" : x.k, full: x.full, text: l, y: h }); h += rPx * lh; });
+    });
+    if (s.notes.length) {
+      h += 2 * u;
+      if (s.style === "rule") { items.push({ t: "rule", y: h }); h += 3 * u; }
+      setFont(ctx, nPx);
+      s.notes.forEach(function (n) { wrap(ctx, n, innerW).forEach(function (l) { items.push({ t: "note", text: l, y: h }); h += nPx * 1.6; }); });
+    }
+    if (s.style === "rule") { items.push({ t: "rule", y: h + 1 * u }); h += 2 * u; }
+    h += padIn;
+    return {
+      w: maxW, h: h,
+      draw: function (x0, y0) {
+        ctx.fillStyle = "#000000"; ctx.strokeStyle = "#000000"; ctx.textBaseline = "top"; ctx.textAlign = "left";
+        if (s.style === "box") { ctx.lineWidth = 0.3 * u; ctx.strokeRect(x0, y0, maxW, h); }
+        items.forEach(function (it) {
+          var x = x0 + padIn, y = y0 + it.y;
+          if (it.t === "title") { setFont(ctx, tPx, "bold"); ctx.fillText(it.text, x, y); }
+          else if (it.t === "rule") { ctx.fillRect(x, y, innerW, Math.max(1, 0.25 * u)); }
+          else if (it.t === "row") { setFont(ctx, rPx, "bold"); if (it.k) ctx.fillText(it.k, x, y); setFont(ctx, rPx); ctx.fillText(it.text, x + (it.full ? 0 : lblW), y); }
+          else { setFont(ctx, nPx); ctx.fillText(it.text, x, y); }
+        });
+      }
+    };
+  }
+
+  // 縦書き(買い切り版)
+  var ROT = "ー―‐-－−─〜～~…‥（）()「」『』【】〈〉《》［］[]｛｝{}〔〕＜＞<>＝=→←：；:;";
+  // 縦書きの1かたまりの高さ(1〜3けたの数字は縦中横で1文字分)
+  function tokH(ctx, tk, px) { return /^[!-~]/.test(tk) ? (/^\d{1,3}$/.test(tk) ? px * 1.05 : ctx.measureText(tk).width + px * 0.2) : px * 1.05; }
+  function vText(ctx, text, x, y, px, step) {
+    // 半角の英数字は横に寝かせてまとめて書く(URL・アカウント名)
+    var a = Array.from(text), yy = y, i = 0;
+    while (i < a.length) {
+      if (/[!-~]/.test(a[i]) && !/[()\[\]{}<>=~:;\-]/.test(a[i])) {
+        var run = "";
+        while (i < a.length && /[!-~ ]/.test(a[i])) run += a[i++];
+        if (/^\d{1,3}$/.test(run)) {
+          // 縦中横
+          var rw0 = ctx.measureText(run).width, sx = Math.min(1, px * 0.95 / rw0);
+          ctx.save(); ctx.translate(x, yy + step / 2); ctx.scale(sx, 1); ctx.fillText(run, 0, 0); ctx.restore();
+          yy += step; continue;
+        }
+        var rw = ctx.measureText(run).width;
+        ctx.save(); ctx.translate(x, yy + rw / 2 + px * 0.1); ctx.rotate(Math.PI / 2); ctx.fillText(run, 0, 0); ctx.restore();
+        yy += rw + px * 0.2;
+        continue;
+      }
+      vChar(ctx, a[i], x, yy, px, step); yy += step; i++;
+    }
+  }
+  function vChar(ctx, ch, x, y0, px, step) {
+    [ch].forEach(function (ch) {
+      var cy = y0 + 0.5 * step;
+      if (ROT.indexOf(ch) >= 0) { ctx.save(); ctx.translate(x, cy); ctx.rotate(Math.PI / 2); ctx.fillText(ch, 0, 0); ctx.restore(); }
+      else if ("、。，．".indexOf(ch) >= 0) ctx.fillText(ch, x + px * 0.55, cy - px * 0.5);
+      else if ("ぁぃぅぇぉっゃゅょゎァィゥェォッャュョヮヵヶ".indexOf(ch) >= 0) ctx.fillText(ch, x + px * 0.14, cy - px * 0.18);
+      else ctx.fillText(ch, x, cy);
+    });
+  }
+  function vBlock(ctx, s, dpi, maxH) {
+    var u = dpi / 25.4, rows = rowsOf(s, true);
+    var tPx = 5 * u, rPx = 3.1 * u, nPx = 2.5 * u, padIn = s.style === "box" ? 4 * u : 0, innerH = maxH - padIn * 2;
+    var cols = [], w = padIn;
+    function split(text, px) {
+      setFont(ctx, px);
+      var toks = text.match(/[!-~][!-~ ]*|[\s\S]/g) || [""], out = [], cur = "", h = 0;
+      toks.forEach(function (tk) {
+        var th = tokH(ctx, tk, px);
+        if (cur && h + th > innerH) { out.push(cur); cur = ""; h = 0; }
+        cur += tk; h += th;
+      });
+      if (cur) out.push(cur);
+      return out.length ? out : [""];
+    }
+    if (s.title) split(s.title, tPx).forEach(function (l) { cols.push({ t: "title", text: l, x: w, px: tPx }); w += tPx * 1.6; });
+    if (s.style === "rule" && (s.title || rows.length)) { cols.push({ t: "rule", x: w + 1 * u }); w += 3 * u; }
+    rows.forEach(function (x) {
+      var line = x.full ? x.v : x.k + "　" + x.v;
+      split(line, rPx).forEach(function (l) { cols.push({ t: "row", text: l, x: w, px: rPx }); w += rPx * 1.75; });
+    });
+    if (s.notes.length) {
+      w += 2 * u;
+      if (s.style === "rule") { cols.push({ t: "rule", x: w }); w += 3 * u; }
+      s.notes.forEach(function (n) { split(n, nPx).forEach(function (l) { cols.push({ t: "note", text: l, x: w, px: nPx }); w += nPx * 1.65; }); });
+    }
+    w += padIn;
+    return {
+      w: w, h: maxH,
+      draw: function (x0, y0) {
+        // 右から左へ
+        ctx.fillStyle = "#000000"; ctx.strokeStyle = "#000000"; ctx.textBaseline = "middle"; ctx.textAlign = "center";
+        if (s.style === "box") { ctx.lineWidth = 0.3 * u; ctx.strokeRect(x0, y0, w, maxH); }
+        cols.forEach(function (c) {
+          var cx = x0 + w - c.x - (c.px || 0) * 0.8;
+          if (c.t === "rule") { ctx.fillRect(x0 + w - c.x, y0 + padIn, Math.max(1, 0.25 * u), innerH); return; }
+          setFont(ctx, c.px, c.t === "title" ? "bold" : "normal");
+          vText(ctx, c.text, cx, y0 + padIn, c.px, c.px * 1.05);
+        });
+      }
+    };
+  }
+
+  // k: 見本用の縮小率
+  function draw(cv, s, k, info, forSave) {
+    var dpi = s.dpi, sz = SIZES[s.size];
+    var W = Math.round(mm2px(sz[0] + BLEED * 2, dpi)), H = Math.round(mm2px(sz[1] + BLEED * 2, dpi));
+    var mc = document.createElement("canvas").getContext("2d");
+    var safeX = mm2px(BLEED + SAFE, dpi), safeY = mm2px(BLEED + SAFE, dpi), safeW = W - safeX * 2, safeH = H - safeY * 2;
+    var blk = s.vert ? vBlock(mc, s, dpi, Math.min(safeH, mm2px(sz[1] * 0.62, dpi))) : hBlock(mc, s, dpi, Math.min(safeW, mm2px(120, dpi)));
+    info.over = s.vert ? blk.w > safeW : blk.h > safeH;
+    var block = forSave && s.out === "block";
+    var cw = block ? Math.ceil(blk.w + mm2px(2, dpi)) : W, ch = block ? Math.ceil(blk.h + mm2px(2, dpi)) : H;
+    cv.width = Math.max(1, Math.round(cw * k)); cv.height = Math.max(1, Math.round(ch * k));
+    var ctx = cv.getContext("2d");
+    if (!ctx) throw new Error("no canvas");
+    ctx.setTransform(k, 0, 0, k, 0, 0);
+    if (!block) { ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, W, H); }
+    var bx, by;
+    if (block) { bx = mm2px(1, dpi); by = mm2px(1, dpi); }
+    else if (s.vert) { bx = safeX; by = s.pos === "center" ? (H - blk.h) / 2 : safeY; }
+    else { bx = safeX; by = s.pos === "center" ? (H - blk.h) / 2 : safeY + safeH - blk.h; }
+    // 描くときは本物のctxで測り直す
+    var real = s.vert ? vBlock(ctx, s, dpi, blk.h) : hBlock(ctx, s, dpi, blk.w);
+    real.draw(bx, by);
+    if (!forSave && s.guide && !block) {
+      ctx.lineWidth = Math.max(1, 1.2 / k); ctx.setLineDash([8 / k, 6 / k]);
+      ctx.strokeStyle = "#e0303a"; ctx.strokeRect(mm2px(BLEED, dpi), mm2px(BLEED, dpi), W - mm2px(BLEED * 2, dpi), H - mm2px(BLEED * 2, dpi));
+      ctx.strokeStyle = "#2f6fd0"; ctx.strokeRect(safeX, safeY, safeW, safeH);
+      ctx.setLineDash([]);
+    }
+    info.W = cw; info.H = ch;
+    return cv;
+  }
+
+  // ===== PNGに解像度(pHYs)を書き込む =====
+  var CRC = null;
+  function crc32(u8) {
+    if (!CRC) { CRC = []; for (var n = 0; n < 256; n++) { var c = n; for (var j = 0; j < 8; j++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; CRC[n] = c >>> 0; } }
+    var x = 0xFFFFFFFF; for (var i = 0; i < u8.length; i++) x = CRC[(x ^ u8[i]) & 255] ^ (x >>> 8);
+    return (x ^ 0xFFFFFFFF) >>> 0;
+  }
+  function withDpi(blob, dpi, done) {
+    if (!blob.arrayBuffer) { done(blob); return; }
+    blob.arrayBuffer().then(function (buf) {
+      var src = new Uint8Array(buf), ppm = Math.round(dpi / 0.0254);
+      // すでにpHYsがあれば入れない(二重になるのを防ぐ)
+      for (var o = 8; o + 8 <= src.length;) { var len = (src[o] << 24 | src[o + 1] << 16 | src[o + 2] << 8 | src[o + 3]) >>> 0, ty = String.fromCharCode(src[o + 4], src[o + 5], src[o + 6], src[o + 7]); if (ty === "pHYs") { done(blob); return; } if (ty === "IDAT") break; o += 12 + len; }
+      var ch = new Uint8Array(21), dv = new DataView(ch.buffer);
+      dv.setUint32(0, 9); ch.set([112, 72, 89, 115], 4); dv.setUint32(8, ppm); dv.setUint32(12, ppm); ch[16] = 1;
+      dv.setUint32(17, crc32(ch.subarray(4, 17)));
+      done(new Blob([src.subarray(0, 33), ch, src.subarray(33)], { type: "image/png" }));
+    }).catch(function () { done(blob); });
+  }
+
+  // ===== 画面 =====
+  var last = null, rTimer = null, pvUrl = null, pvBusy = false, pvAgain = false;
+  var pvCv = document.createElement("canvas");
+  function render() {
+    rTimer = null;
+    var s = settings();
+    saveLast();
+    $("outText").value = textOut(s);
+    var info = {}, sz = SIZES[s.size];
+    var k = Math.min(1, PV_MAX / mm2px(Math.max(sz[0], sz[1]) + BLEED * 2, s.dpi));
+    try { draw(pvCv, s, k, info, false); }
+    catch (e) { last = null; $("saveBtn").disabled = true; setSt("st", "見本の画像を作れませんでした。", true); return; }
+    if ($("st").classList.contains("err")) setSt("st", "");
+    if (pvBusy) pvAgain = true;
+    else {
+      pvBusy = true;
+      pvCv.toBlob(function (bl) {
+        pvBusy = false;
+        if (bl) { var old = pvUrl; pvUrl = URL.createObjectURL(bl); $("pvImg").src = pvUrl; if (old) setTimeout(function () { URL.revokeObjectURL(old); }, 1000); }
+        if (pvAgain) { pvAgain = false; render(); }
+      }, "image/png");
+    }
+    var w = [], empty = !s.title && !rowsOf(s, false).length && !s.notes.length;
+    if (info.over) w.push("奥付が安全な範囲(青の線)からはみ出しています。注意書きや連絡先を減らすか、大きい判型にしてください。");
+    if (empty) w.push("タイトルなどを入れると、保存とコピーができます。");
+    else if (!s.circle && !s.author) w.push("発行者(サークル名)か著者を入れると、奥付として必要な情報がそろいます。");
+    var wt = w.length ? "⚠ " + w.join(" ") : "";
+    if ($("warn").textContent !== wt) $("warn").textContent = wt;
+    var W = Math.round(mm2px(sz[0] + BLEED * 2, s.dpi)), H = Math.round(mm2px(sz[1] + BLEED * 2, s.dpi));
+    var msg = SIZE_NAME[s.size] + "(" + sz[0] + "×" + sz[1] + "mm)・塗り足し3mmつき・" + s.dpi + "dpiで、" + (s.out === "block" ? "奥付の部分だけを背景透明で" : W + "×" + H + "pxの画像に") + "します。";
+    $("info").textContent = msg;
+    $("pvImg").alt = "奥付の見本。" + msg;
+    $("saveBtn").disabled = empty; $("copyBtn").disabled = empty;
+    last = s; last.empty = empty;
+  }
+  function changed() { clearTimeout(rTimer); rTimer = setTimeout(render, 150); setSt("copySt", ""); }
+  function flush() { if (rTimer) { clearTimeout(rTimer); render(); } }
+
+  var saving = false;
+  $("saveBtn").addEventListener("click", function () {
+    flush(); if (!last || last.empty || saving) return;
+    var s = last, cv = document.createElement("canvas"), btn = this;
+    saving = true; btn.disabled = true;
+    function end() { saving = false; btn.disabled = !last || !!last.empty; cv.width = cv.height = 0; }
+    setSt("st", "画像を作っています…");
+    try { draw(cv, s, 1, {}, true); } catch (e) { end(); setSt("st", "画像を作れませんでした(メモリが足りない可能性があります)。", true); return; }
+    cv.toBlob(function (b0) {
+      if (!b0) { end(); setSt("st", "画像を作れませんでした。", true); return; }
+      withDpi(b0, s.dpi, function (b) {
+        end();
+        var a = document.createElement("a"), url = URL.createObjectURL(b);
+        a.href = url; a.download = "okuduke_" + SIZE_NAME[s.size] + "_" + s.dpi + "dpi" + (s.out === "block" ? "_block" : "") + ".png";
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+        setSt("st", "画像を保存しました(" + s.dpi + "dpiの情報つき)。");
+      });
+    }, "image/png");
+    track("okuduke_save", { size: s.size, dpi: s.dpi, style: s.style, vert: s.vert ? 1 : 0, out: s.out, rows: rowsOf(s, false).length, notes: s.notes.length });
+  });
+  $("copyBtn").addEventListener("click", function () {
+    flush();
+    var v = $("outText").value;
+    if (!v) return;
+    var done = function () { setSt("copySt", "コピーしました。原稿のソフトに貼り付けられます。"); };
+    var fail = function () { setSt("copySt", "コピーできませんでした。テキストを選んでコピーしてください。", true); };
+    var fallback = function () { var t = $("outText"); t.focus(); t.select(); try { if (document.execCommand("copy")) done(); else fail(); } catch (e) { fail(); } };
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(v).then(done, fallback); else fallback();
+    track("okuduke_copy", { rows: rowsOf(last || settings(), false).length });
+  });
+
+  // ===== 設定の記憶(このブラウザだけ) =====
+  var noSave = false;
+  function snapshot() {
+    var o = {};
+    document.querySelectorAll("[data-save]").forEach(function (e) { o[e.id] = e.type === "checkbox" ? e.checked : e.value; });
+    o.dates = dates; o.contacts = contacts;
+    return o;
+  }
+  function applySnap(o) {
+    if (!o || typeof o !== "object") return;
+    document.querySelectorAll("[data-save]").forEach(function (e) {
+      if (e.type === "checkbox") { if (typeof o[e.id] === "boolean") e.checked = o[e.id]; return; }
+      if (typeof o[e.id] !== "string") return;
+      var v = o[e.id].slice(0, e.maxLength > 0 ? e.maxLength : 16);
+      if (e.tagName === "SELECT" && ![].some.call(e.options, function (op) { return op.value === v; })) return;
+      e.value = v;
+    });
+    if (o.dates) dates = cleanDates(o.dates);
+    if (o.contacts) contacts = cleanContacts(o.contacts);
+  }
+  function saveNow() { if (noSave) return; try { localStorage.setItem(LAST_KEY, JSON.stringify(snapshot())); } catch (e) {} }
+  var saveTimer = null;
+  function saveLast() { clearTimeout(saveTimer); saveTimer = setTimeout(saveNow, 300); }
+  window.addEventListener("pagehide", function () { if (rTimer) flush(); saveNow(); });
+
+  document.querySelectorAll("[data-save]").forEach(function (e) {
+    e.addEventListener(e.tagName === "SELECT" || e.type === "checkbox" ? "change" : "input", changed);
+  });
+  document.addEventListener("focusin", function (e) { document.body.classList.toggle("typing", /^(TEXTAREA|INPUT)$/.test(e.target.tagName) && e.target.type !== "checkbox" && e.target.id !== "outText"); });
+  document.addEventListener("focusout", function () { document.body.classList.remove("typing"); });
+  $("resetAll").addEventListener("click", function () {
+    if (!window.confirm("入力した内容を全部消して、最初の状態に戻します。よろしいですか?")) return;
+    noSave = true;
+    try { localStorage.removeItem(LAST_KEY); } catch (e) {}
+    location.reload();
+  });
+
+  
+
+  try { applySnap(JSON.parse(localStorage.getItem(LAST_KEY) || "null")); } catch (e) {}
+  dates = cleanDates(dates); contacts = cleanContacts(contacts);
+  if (EDITION !== "full") {
+    $("privacyNote").innerHTML = '入力した内容はどこにも送信されません(すべてこのブラウザの中で処理します)。このページでは利用状況の把握のためにアクセス解析(Google Analytics)を使っています。<a href="https://policies.google.com/technologies/partner-sites?hl=ja" target="_blank" rel="noopener">Googleによるデータの使用について</a>';
+  }
+  datesUi(); contactsUi(); syncChips();
+  render();
+})();
+</script>
+<!--UPSELL_JS_START-->
+<script>
+(function () {
+  "use strict";
+  var q = new URLSearchParams(location.search);
+  if (q.get("obs") === "1" || document.documentElement.classList.contains("obs")) return;
+  // 小さな案内(トースト)は、買い切り版がパソコン向けなので、マウス操作の広い画面でだけ出す
+  var pc = !!(window.matchMedia && matchMedia("(pointer:fine) and (min-width:720px)").matches);
+  var buy = document.getElementById("buyLink");
+  var pro = document.getElementById("pro-section");
+  if (!buy || !pro) return;
+  var FEATS = [], CALM = false;
+  var path = location.pathname.replace(/index\.html$/, "");
+  var KEY_CLOSED = "upsell_closed_until:" + path, KEY_SHOWN = "upsell_shown:" + path;
+  function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
+  function sess(k, v) { try { if (v === undefined) return sessionStorage.getItem(k); sessionStorage.setItem(k, v); } catch (e) { return null; } }
+  function gtagEv(name, p) { if (!window.dataLayer) return; (function () { window.dataLayer.push(arguments); })("event", name, p || {}); }
+
+  var shown = false;
+  function blocked() {
+    if (shown || sess(KEY_SHOWN) === "1") return true;
+    var until = Number(store(KEY_CLOSED) || 0);
+    return until && Date.now() < until;
+  }
+  function feats() {
+    if (FEATS.length) return FEATS;
+    var out = [];
+    var lis = pro.querySelectorAll(".feat-list li");
+    for (var i = 0; i < lis.length && out.length < 3; i++) {
+      var all = lis[i].textContent.replace(/\s+/g, " ").trim();
+      if (/スマホ|HTMLファイル|パソコンで使う/.test(all)) continue;
+      var st = lis[i].querySelectorAll("strong");
+      var t = st.length === 1 ? st[0].textContent : all.split(/[::。]/)[0];
+      t = t.replace(/[((][^()()]*[))]/g, "").replace(/\s+/g, " ").trim();
+      if (t.length > 40) t = t.slice(0, 39) + "…";
+      if (t) out.push(t);
+    }
+    return out;
+  }
+  // 「〜してください」「できません」など、失敗の表示が出ていたら案内しない
+  function failed() {
+    var els = document.querySelectorAll('[role="status"], [role="alert"], [aria-live]');
+    for (var i = 0; i < els.length; i++) {
+      if (pro.contains(els[i]) || !els[i].offsetParent) continue;
+      if (/ください|できません|できませんでした|失敗|ありません|エラー/.test(els[i].textContent)) return true;
+    }
+    return false;
+  }
+  function proVisible() {
+    var r = pro.getBoundingClientRect();
+    return r.top < innerHeight && r.bottom > 0;
+  }
+  function show(trigger) {
+    if (!pc || blocked() || (trigger === "action" && failed()) || proVisible()) return;
+    var list = feats();
+    if (!list.length) return;
+    shown = true;
+    sess(KEY_SHOWN, "1");
+    var box = document.createElement("aside");
+    box.className = "upsell-toast" + (CALM ? " upsell-calm" : "");
+    box.setAttribute("aria-label", "買い切り版のご案内");
+    box.setAttribute("aria-live", "polite");
+    document.body.appendChild(box);
+    var p = document.createElement("p");
+    p.textContent = trigger === "limit" && CALM ? "件数が多いときは、パソコン用の買い切り版(¥100・税込)で続けられます:"
+      : trigger === "limit"
+      ? "この先は買い切り版の機能です。パソコン用の買い切り版(¥100・税込)なら:"
+      : CALM ? "件数が多いときや、香典返しの準備をまとめたいときのために、パソコン用の買い切り版(¥100・税込)もあります:" : "うまくできましたか? パソコン用の買い切り版(¥100・税込)なら、さらに:";
+    var ul = document.createElement("ul");
+    list.forEach(function (t) { var li = document.createElement("li"); li.textContent = t; ul.appendChild(li); });
+    var a = document.createElement("a");
+    a.className = "upsell-go";
+    a.id = "upsellToastLink";
+    a.href = buy.href;
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.textContent = "BOOTHで見る(新しいタブ)";
+    var bg = getComputedStyle(buy).backgroundColor;
+    if (bg && !/rgba?\(0, 0, 0, 0\)|transparent/.test(bg)) a.style.background = bg;
+    var x = document.createElement("button");
+    x.type = "button";
+    x.className = "upsell-x";
+    x.setAttribute("aria-label", "この案内を閉じる");
+    x.textContent = "×";
+    function close(remember) {
+      if (box.parentNode) box.parentNode.removeChild(box);
+      document.removeEventListener("keydown", onKey);
+      if (remember) store(KEY_CLOSED, String(Date.now() + 7 * 864e5));
+    }
+    // Escはページ側の操作(選択解除など)にも使われるので、案内の中にフォーカスがある時だけ閉じる
+    function onKey(e) { if (e.key === "Escape" && box.contains(document.activeElement)) close(true); }
+    x.addEventListener("click", function () { close(true); });
+    a.addEventListener("click", function () { setTimeout(function () { close(false); }, 0); });
+    document.addEventListener("keydown", onKey);
+    setTimeout(function () {
+      var note = document.createElement("small");
+      note.className = "upsell-note";
+      note.textContent = "スマホではファイルを開けない機種があります";
+      box.appendChild(x); box.appendChild(p); box.appendChild(ul); box.appendChild(a); box.appendChild(note);
+    }, 50);
+    gtagEv("upsell_show", { trigger: trigger });
+  }
+
+  // 保存・コピー・印刷・書き出しを押した直後(結果を受け取れたタイミング)
+  var OK = /保存|コピー|印刷|書き出|ダウンロード|共有|PDF/;
+  var NG = /読み込|リセット|消|削除|このブラウザに保存|確認|イメージを見る|戻/;
+  document.addEventListener("click", function (e) {
+    var el = e.target && e.target.closest ? e.target.closest("button, a[download], input[type=button], input[type=submit]") : null;
+    if (!el || el.closest("#pro-section, .upsell-toast, #anshin")) return;
+    var label = (el.textContent || el.value || "").replace(/\s+/g, " ");
+    if (!OK.test(label) || NG.test(label)) return;
+    setTimeout(function () { show("action"); }, 1500);
+  }, true);
+
+  // 無料版の上限まわり
+  // (1) ページが出す「買い切り版」の一文に、購入欄へのリンクを足す(スマホでも)。🔒のタブは薄く表示されているので入れない
+  // (2) 案内(パソコンのみ)は、はっきりした合図のときだけ出す: 🔒のクリック・買い切り版にふれたalert・
+  //     初めて出た「〜まで/のみ/以降/入っていません」の上限の一文(計算のたびに出る誘導文や、同じ文の描き直しでは出さない)
+  var SKIP = "#pro-section, .upsell-toast, .upsell-top, #anshin, a, button, label, select, option, h1, h2, h3, .badge, header, footer, nav, textarea, pre, code, [contenteditable], svg";
+  var LIMIT = /まで|のみ|以降|入っていません/;
+  var seenText = {}, ready = false;
+  function goPro(e) {
+    if (e) e.preventDefault();
+    pro.setAttribute("tabindex", "-1");
+    pro.scrollIntoView({ behavior: "smooth", block: "start" });
+    pro.focus({ preventScroll: true });
+  }
+  function linkify(root, deep) {
+    var limitHit = false;
+    var els = root.matches("p, div, span, li") ? [root] : [];
+    if (deep) els = els.concat([].slice.call(root.querySelectorAll("p, div, span, li")));
+    els.forEach(function (el) {
+      if (el.closest(SKIP) || el.closest('[role="radio"], [role="option"], [role="tab"], [role="button"], [tabindex]:not([tabindex="-1"])') || el.querySelector("a, button, p, div, li, input, label")) return;
+      // 選択肢の「○○(買い切り版)」ではなく、文として買い切り版にふれている要素だけ
+      var own = "";
+      for (var n = el.firstChild; n; n = n.nodeType === 1 && n.className === "upsell-inline" ? null : n.nextSibling) if (n.nodeType === 3) own += n.nodeValue;
+      own = own.trim();
+      if (own.indexOf("買い切り版") < 0 || /[((]買い切り版[))]$/.test(own) || /^🔒/.test(own)) return;
+      var key = own.replace(/\d+/g, "#");
+      if (ready && !seenText[key] && LIMIT.test(own) && !el.closest(".teaser, #teaser, [id$=teaser], #tz")) limitHit = true;
+      seenText[key] = 1;
+      if (el.querySelector(".upsell-inline")) return;
+      var a = document.createElement("a");
+      a.className = "upsell-inline";
+      a.href = "#pro-section";
+      a.setAttribute("aria-label", "くわしく:買い切り版の説明へ移動");
+      a.textContent = "くわしく";
+      var ar = document.createElement("span");
+      ar.setAttribute("aria-hidden", "true");
+      ar.textContent = " ↓";
+      a.appendChild(ar);
+      a.addEventListener("click", goPro);
+      el.appendChild(document.createTextNode(" "));
+      el.appendChild(a);
+    });
+    return limitHit;
+  }
+  linkify(document.body, true);
+  setTimeout(function () { ready = true; }, 1500);
+  var topLink = document.querySelector("#upsellTop a");
+  if (topLink) topLink.addEventListener("click", goPro);
+  new MutationObserver(function (ms) {
+    // 変わったところだけを調べる(足された要素はその中も、文字の変更は親要素だけ)
+    var hit = false, done = new Set();
+    function check(t, deep) {
+      if (!t || t.nodeType !== 1 || done.has(t) || t.closest(".upsell-toast")) return;
+      done.add(t);
+      if (linkify(t, deep)) hit = true;
+    }
+    ms.forEach(function (m) {
+      if (m.type === "characterData") { check(m.target.parentNode, false); return; }
+      check(m.target, false);
+      for (var i = 0; i < m.addedNodes.length; i++) if (m.addedNodes[i].nodeType === 1) check(m.addedNodes[i], true);
+    });
+    if (hit) setTimeout(function () { show("limit"); }, 800);
+  }).observe(document.body, { childList: true, subtree: true, characterData: true });
+  document.addEventListener("click", function (e) {
+    var el = e.target && e.target.closest ? e.target.closest("button, div, span, li") : null;
+    var first = el && el.firstChild && el.firstChild.nodeType === 3 ? el.firstChild.nodeValue : "";
+    if (!/^\s*🔒/.test(first) || e.target.closest("#pro-section")) return;
+    if (pc) setTimeout(function () { show("limit"); }, 300); else goPro();
+  }, true);
+  var origAlert = window.alert;
+  window.alert = function (msg) {
+    var r = origAlert.apply(window, arguments);
+    if (/買い切り版/.test(String(msg))) setTimeout(function () { show("limit"); }, 300);
+    return r;
+  };
+})();
+</script>
+<!--UPSELL_JS_END-->
+</body>
+</html>
